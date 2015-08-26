@@ -97,17 +97,11 @@ class GoDaddyClient(object):
         :returns:  `True` if login is successful, else `False`
         """
         r = self.session.get(self.default_url)
-        try:
-            viewstate = re.compile(r'id="__VIEWSTATE" value="([^"]+)"').search(r.text).group(1)
-        except:
-            logger.exception('Login routine broken, godaddy may have updated their login mechanism')
-            return False
         data = {
-                'Login$userEntryPanel2$LoginImageButton.x' : 0,
-                'Login$userEntryPanel2$LoginImageButton.y' : 0,
-                'Login$userEntryPanel2$UsernameTextBox' : username,
-                'Login$userEntryPanel2$PasswordTextBox' : password,
-                '__VIEWSTATE': viewstate,
+            'app'      : 'idp',
+            'realm'    : 'idp',
+            'name'     : username,
+            'password' : password,
         }
         r = self.session.post(r.url, data=data)
         return self.is_loggedin(r.text)
